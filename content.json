@@ -1,28 +1,39 @@
 {
   "nome": "Cimá Carriço",
-  "slogan": "Restaurante & Tapas Bar",
-  "titulo": "Em Linhares, a mesa é grande e o petisco chega primeiro.",
-  "intro": "Tapas, pratos de panela e o jeito de quem recebe em casa. Venha almoçar, jantar ou ficar mais um pouco.",
+  "slogan": "Restaurante & Tampas Bar",
+  "titulo": "Um lugar para encontros que merecem boa mesa.",
+  "intro": "Almoços, jantares e celebrações em Linhares. Reserve sua mesa ou combine seu evento direto pelo WhatsApp.",
   "fotoPrincipal": "",
-  "sobreTitulo": "Comida para dividir",
-  "sobreTexto": "O Cimá Carriço nasceu da vontade de juntar gente em volta de comida boa. Aqui o cardápio é pensado para a mesa toda: pedidos pequenos que se multiplicam, pratos que pedem conversa e sobremesa que ninguém dispensa.",
+  "sobreTitulo": "A casa",
+  "sobreTexto": "O Cimá Carriço é restaurante e bar em Linhares, no Espírito Santo. Recebemos almoços em família, jantares a dois e comemorações, com cardápio pensado para a mesa toda e atendimento próximo, do primeiro prato à sobremesa.",
   "fotoSobre": "",
-  "pratosTitulo": "Pra começar a mesa",
-  "pratos": [
-    {"prato": "Tábua de petiscos da casa", "descricao": "Seleção do dia, para dividir em quatro.", "preco": "R$ 78"},
-    {"prato": "Bolinho de bacalhau", "descricao": "Porção com 8 unidades e molho da casa.", "preco": "R$ 42"},
-    {"prato": "Polvo grelhado", "descricao": "Batatas ao murro e azeite de ervas.", "preco": "R$ 96"},
-    {"prato": "Moqueca capixaba", "descricao": "Peixe do dia, pirão e arroz branco.", "preco": "R$ 138"},
-    {"prato": "Pudim da casa", "descricao": "Calda de caramelo bem tostada.", "preco": "R$ 22"}
+  "destaquesTitulo": "Da cozinha",
+  "destaques": [
+    {"prato": "Tábua de petiscos", "descricao": "Seleção da casa para dividir.", "preco": "R$ 78"},
+    {"prato": "Moqueca capixaba", "descricao": "Peixe do dia, pirão e arroz.", "preco": "R$ 138"},
+    {"prato": "Drinks da casa", "descricao": "Clássicos e autorais, do balcão à mesa.", "preco": "R$ 32"},
+    {"prato": "Pudim de leite", "descricao": "Calda de caramelo bem tostada.", "preco": "R$ 22"}
   ],
   "galeria": ["", "", "", "", ""],
-  "visiteTitulo": "Venha sentar com a gente",
-  "horarios": [
-    {"dia": "Terça a sexta", "hora": "11h às 15h e 18h às 23h"},
-    {"dia": "Sábado", "hora": "11h às 23h"},
-    {"dia": "Domingo", "hora": "11h às 17h"}
+  "reservaTitulo": "Reserve sua mesa",
+  "reservaTexto": "Escolha o dia, o horário e a quantidade de pessoas. A mensagem segue pronta para o nosso WhatsApp.",
+  "eventosTitulo": "Eventos e comemorações",
+  "eventosTexto": "Aniversários, confraternizações e reuniões. Informe o tipo de evento e o número de convidados e enviamos as opções.",
+  "tiposEvento": ["Aniversário", "Confraternização de empresa", "Casamento ou noivado", "Formatura", "Outro"],
+  "atalhos": [
+    {"rotulo": "Receber o cardápio de eventos", "texto": "Olá! Gostaria de receber o cardápio para eventos do Cimá Carriço."},
+    {"rotulo": "Mesa para grupo grande", "texto": "Olá! Preciso de uma mesa para um grupo grande. Podem me ajudar?"},
+    {"rotulo": "Tirar uma dúvida", "texto": "Olá! Tenho uma dúvida sobre o restaurante."}
   ],
+  "avaliacoes": {"cabecalho": "O que dizem no Google", "nota": "", "total": "", "itens": []},
+  "visiteTitulo": "Como chegar",
+  "mapaBusca": "Cimá Carriço Restaurante Linhares ES",
   "endereco": "Linhares, Espírito Santo",
+  "horarios": [
+    {"dias": "Terça a sexta", "d": "2-5", "abre": "11:00", "fecha": "23:00"},
+    {"dias": "Sábado", "d": "6", "abre": "11:00", "fecha": "23:00"},
+    {"dias": "Domingo", "d": "0", "abre": "11:00", "fecha": "17:00"}
+  ],
   "links": {
     "cardapio": "https://drive.google.com/file/d/18yn9ScWvaD97JLL2tprKmtLldp8MJBP_/view?usp=drivesdk",
     "delivery": "https://delivery.appline.com.br/cimacarrico/",
