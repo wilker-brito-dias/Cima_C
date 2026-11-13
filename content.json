@@ -1,0 +1,34 @@
+{
+  "nome": "Cimá Carriço",
+  "slogan": "Restaurante & Tapas Bar",
+  "titulo": "Em Linhares, a mesa é grande e o petisco chega primeiro.",
+  "intro": "Tapas, pratos de panela e o jeito de quem recebe em casa. Venha almoçar, jantar ou ficar mais um pouco.",
+  "fotoPrincipal": "",
+  "sobreTitulo": "Comida para dividir",
+  "sobreTexto": "O Cimá Carriço nasceu da vontade de juntar gente em volta de comida boa. Aqui o cardápio é pensado para a mesa toda: pedidos pequenos que se multiplicam, pratos que pedem conversa e sobremesa que ninguém dispensa.",
+  "fotoSobre": "",
+  "pratosTitulo": "Pra começar a mesa",
+  "pratos": [
+    {"prato": "Tábua de petiscos da casa", "descricao": "Seleção do dia, para dividir em quatro.", "preco": "R$ 78"},
+    {"prato": "Bolinho de bacalhau", "descricao": "Porção com 8 unidades e molho da casa.", "preco": "R$ 42"},
+    {"prato": "Polvo grelhado", "descricao": "Batatas ao murro e azeite de ervas.", "preco": "R$ 96"},
+    {"prato": "Moqueca capixaba", "descricao": "Peixe do dia, pirão e arroz branco.", "preco": "R$ 138"},
+    {"prato": "Pudim da casa", "descricao": "Calda de caramelo bem tostada.", "preco": "R$ 22"}
+  ],
+  "galeria": ["", "", "", "", ""],
+  "visiteTitulo": "Venha sentar com a gente",
+  "horarios": [
+    {"dia": "Terça a sexta", "hora": "11h às 15h e 18h às 23h"},
+    {"dia": "Sábado", "hora": "11h às 23h"},
+    {"dia": "Domingo", "hora": "11h às 17h"}
+  ],
+  "endereco": "Linhares, Espírito Santo",
+  "links": {
+    "cardapio": "https://drive.google.com/file/d/18yn9ScWvaD97JLL2tprKmtLldp8MJBP_/view?usp=drivesdk",
+    "delivery": "https://delivery.appline.com.br/cimacarrico/",
+    "mapa": "https://maps.app.goo.gl/L8a8YCB6cWoxGipYA?g_st=com.google.maps.preview.copy",
+    "reservas": "https://wa.me/5527999271527",
+    "whatsapp": "https://wa.me/5527996010561",
+    "instagram": "https://www.instagram.com/cimacarrico.restaurante/"
+  }
+}
