@@ -2,15 +2,16 @@ const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt
 const U=u=>/^(https?:|tel:|mailto:|#)/.test(u||'')?E(u):'#';
 const num=u=>((u||'').match(/wa\.me\/(\d+)/)||[])[1]||'';
 const wa=(n,t)=>`https://wa.me/${n}?text=${encodeURIComponent(t)}`;
+const fone=n=>{n=String(n).replace(/^55/,'');return n.length>=10?`(${n.slice(0,2)}) ${n.slice(2,n.length-4)}-${n.slice(-4)}`:n};
 const hh=t=>String(t).replace(':00','h').replace(':','h');
 const $=s=>document.querySelector(s);
 const ART=[
-`<rect width='200' height='200' fill='#1B3FA0'/><rect x='28' y='48' width='144' height='104' rx='14' fill='#B07A45'/><circle cx='64' cy='86' r='11' fill='#5E6B2F'/><circle cx='90' cy='74' r='9' fill='#5E6B2F'/><path d='M112 68l32 9-8 30-34-6z' fill='#E8C65A'/><circle cx='68' cy='122' r='14' fill='#D93B25'/><path d='M104 120c10-9 28-9 38 2-10 11-28 11-38-2z' fill='#F4F5F2'/><circle cx='150' cy='132' r='8' fill='#5E6B2F'/>`,
-`<rect width='200' height='200' fill='#0B1638'/><circle cx='100' cy='100' r='76' fill='#F4F5F2'/><circle cx='100' cy='100' r='58' fill='#D9622B'/><ellipse cx='96' cy='100' rx='34' ry='15' fill='#F2D9B8' transform='rotate(-25 96 100)'/><circle cx='70' cy='128' r='7' fill='#5E6B2F'/><circle cx='128' cy='72' r='7' fill='#5E6B2F'/><circle cx='132' cy='126' r='6' fill='#E8C65A'/>`,
-`<rect width='200' height='200' fill='#D93B25'/><path d='M66 46h68l-8 74q-26 16-52 0z' fill='#F4F5F2' fill-opacity='.9'/><path d='M72 78h56l-4 42q-24 12-48 0z' fill='#E8C65A'/><rect x='96' y='122' width='8' height='38' fill='#F4F5F2'/><ellipse cx='100' cy='162' rx='28' ry='6' fill='#F4F5F2'/><circle cx='134' cy='48' r='15' fill='#5E9E3A'/><circle cx='134' cy='48' r='9' fill='#B6DB7A'/>`,
-`<rect width='200' height='200' fill='#D2AE6D'/><ellipse cx='100' cy='146' rx='68' ry='16' fill='#F4F5F2'/><path d='M58 140q-8-60 42-66 50 6 42 66z' fill='#C9792B'/><path d='M62 118q38 14 76 0 4 16 3 22-41 12-82 0 0-8 3-22z' fill='#8A4A12'/><ellipse cx='100' cy='76' rx='30' ry='7' fill='#8A4A12'/>`];
-const art=i=>`<svg viewBox='0 0 200 200' preserveAspectRatio='xMidYMid slice' role='img' aria-label='Ilustração'>${ART[i%4]}</svg>`;
-const pic=(s,i,a)=>s&&/^(data:image\/|https:)/.test(s)?`<img src="${E(s)}" alt="${E(a)}" loading="lazy">`:art(i);
+`<rect x='-60' y='-60' width='320' height='320' fill='#1B3FA0'/><rect x='28' y='48' width='144' height='104' rx='14' fill='#B07A45'/><circle cx='64' cy='86' r='11' fill='#5E6B2F'/><circle cx='90' cy='74' r='9' fill='#5E6B2F'/><path d='M112 68l32 9-8 30-34-6z' fill='#E8C65A'/><circle cx='68' cy='122' r='14' fill='#D93B25'/><path d='M104 120c10-9 28-9 38 2-10 11-28 11-38-2z' fill='#F4F5F2'/><circle cx='150' cy='132' r='8' fill='#5E6B2F'/>`,
+`<rect x='-60' y='-60' width='320' height='320' fill='#0B1638'/><circle cx='100' cy='100' r='76' fill='#F4F5F2'/><circle cx='100' cy='100' r='58' fill='#D9622B'/><ellipse cx='96' cy='100' rx='34' ry='15' fill='#F2D9B8' transform='rotate(-25 96 100)'/><circle cx='70' cy='128' r='7' fill='#5E6B2F'/><circle cx='128' cy='72' r='7' fill='#5E6B2F'/><circle cx='132' cy='126' r='6' fill='#E8C65A'/>`,
+`<rect x='-60' y='-60' width='320' height='320' fill='#D93B25'/><path d='M66 46h68l-8 74q-26 16-52 0z' fill='#F4F5F2' fill-opacity='.9'/><path d='M72 78h56l-4 42q-24 12-48 0z' fill='#E8C65A'/><rect x='96' y='122' width='8' height='38' fill='#F4F5F2'/><ellipse cx='100' cy='162' rx='28' ry='6' fill='#F4F5F2'/><circle cx='134' cy='48' r='15' fill='#5E9E3A'/><circle cx='134' cy='48' r='9' fill='#B6DB7A'/>`,
+`<rect x='-60' y='-60' width='320' height='320' fill='#D2AE6D'/><ellipse cx='100' cy='146' rx='68' ry='16' fill='#F4F5F2'/><path d='M58 140q-8-60 42-66 50 6 42 66z' fill='#C9792B'/><path d='M62 118q38 14 76 0 4 16 3 22-41 12-82 0 0-8 3-22z' fill='#8A4A12'/><ellipse cx='100' cy='76' rx='30' ry='7' fill='#8A4A12'/>`];
+const art=i=>`<div class="im"><svg viewBox='0 -25 200 250' preserveAspectRatio='xMidYMid slice' role='img' aria-label='Ilustração'>${ART[i%4]}</svg></div>`;
+const pic=(s,i,a)=>s&&/^(data:image\/|https:)/.test(s)?`<div class="im"><img src="${E(s)}" alt="${E(a)}" loading="lazy"></div>`:art(i);
 const stars=n=>{n=Math.max(0,Math.min(5,Math.round(+n||0)));return '★'.repeat(n)+'☆'.repeat(5-n)};
 const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
 
@@ -31,15 +32,15 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   const wTxt=`Olá! Vim pelo site do ${c.nome} e gostaria de falar com vocês.`;
   document.getElementById('app').innerHTML=`
   <header id="h"><div class="w"><b>${E(c.nome)}</b>
-    <nav><button class="lk" data-menu>Cardápio</button><a href="#reservas">Reservas</a><a href="#eventos">Eventos</a><a href="#visite">Como chegar</a></nav>
-    <a class="btn" href="#reservas">Reservar</a></div></header>
+    <nav><button class="lk" data-menu>Cardápio</button><a href="#reservas">Reservas</a><a href="#eventos">Eventos</a><a href="#avaliacoes">Avaliações</a><a href="#visite">Como chegar</a></nav>
+    <div class="hr"><a class="btn" href="#reservas">Reservar</a><button class="mb" type="button" aria-label="Abrir menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button></div></div></header>
   <div class="dark"><div class="w hero">
     <div><h1>${E(c.titulo)}</h1><p>${E(c.intro)}</p>
       <a class="btn" href="#reservas">Reservar mesa</a><button class="btn o" data-menu>Ver cardápio</button><br>${st}</div>
-    <div class="arch">${pic(c.fotoPrincipal,2,c.nome)}</div></div></div>
+    <div class="ah"><div class="arch">${pic(c.fotoPrincipal,2,c.nome)}</div>${A.nota?`<a class="bd" href="${U(L.mapa)}" target="_blank" rel="noopener"><b>${E(A.nota)}</b><span aria-hidden="true">${stars(A.nota)}</span><small>${A.total?E(A.total)+' avaliações no Google':'No Google'}</small></a>`:''}</div></div></div>
   <section><div class="w about">${pic(c.fotoSobre,0,c.sobreTitulo)}<div><h2>${E(c.sobreTitulo)}</h2><p>${E(c.sobreTexto)}</p></div></div></section>
   <section style="padding-top:0"><div class="w"><h2>${E(c.destaquesTitulo)}</h2>
-    <div class="dest">${c.destaques.map((p,i)=>`<div class="cap">${art(i)}<h3>${E(p.prato)}</h3><p>${E(p.descricao)}</p><b>${E(p.preco)}</b></div>`).join('')}</div>
+    <div class="dest">${c.destaques.map((p,i)=>`<div class="cap">${pic(p.foto,i,p.prato)}<h3>${E(p.prato)}</h3><p>${E(p.descricao)}</p><b>${E(p.preco)}</b></div>`).join('')}</div>
     <div style="margin-top:36px"><button class="btn k" data-menu>Abrir cardápio completo</button><a class="btn o" style="color:var(--ink)" href="${U(L.delivery)}" target="_blank" rel="noopener">Pedir no delivery</a></div></div></section>
   <section style="padding-top:0"><div class="w gal">${c.galeria.map((g,i)=>pic(g,i,'Foto do '+c.nome)).join('')}</div></section>
   <div class="dark"><section><div class="w">
@@ -66,11 +67,18 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
       <dl>${c.horarios.map(h=>`<div><dt>${E(h.dias)}</dt><dd>${hh(h.abre)} às ${hh(h.fecha)}</dd></div>`).join('')}</dl>
       <div style="margin-top:28px"><a class="btn k" href="${U(L.mapa)}" target="_blank" rel="noopener">Abrir no Google Maps</a><a class="btn o" style="color:var(--ink)" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">Abrir no Waze</a></div></div>
     <iframe title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${q}&output=embed"></iframe></div></section>
-  <div class="dark"><footer><div class="w"><span>© ${now.getFullYear()} ${E(c.nome)}</span><a href="${U(L.instagram)}" target="_blank" rel="noopener">Instagram</a></div></footer></div>
+  <div class="dark ft"><div class="w ftg">
+    <div><b class="fb">${E(c.nome)}</b><p>${E(c.rodapeTexto)}</p><a class="btn" href="#reservas">Reservar mesa</a></div>
+    <div><h4>Horários</h4>${c.horarios.map(h=>`<p>${E(h.dias)}: ${hh(h.abre)} às ${hh(h.fecha)}</p>`).join('')}</div>
+    <div><h4>Endereço</h4><p>${E(c.endereco)}</p><p><a href="${U(L.mapa)}" target="_blank" rel="noopener">Abrir no Google Maps</a></p><p><a href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">Abrir no Waze</a></p></div>
+    <div><h4>Contato</h4><p><a href="${U(L.reservas)}" target="_blank" rel="noopener">Reservas: ${fone(R)}</a></p><p><a href="${U(L.whatsapp)}" target="_blank" rel="noopener">WhatsApp: ${fone(G)}</a></p><p><a href="${U(L.instagram)}" target="_blank" rel="noopener">Instagram</a></p><p><a href="${U(L.delivery)}" target="_blank" rel="noopener">Delivery</a></p><p><button class="lk" data-menu>Ver cardápio</button></p></div>
+  </div><div class="w fb2"><span>© ${now.getFullYear()} ${E(c.nome)}. Todos os direitos reservados.</span>${c.credito?`<span>${E(c.credito)}</span>`:''}</div></div>
   <a class="fab" aria-label="Falar pelo WhatsApp" href="${U(wa(G,wTxt))}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.200 14.800l-.3-.2-2.600.7.700-2.500-.2-.3A8 8 0 0 1 12 4z"/><path d="M8.500 7.500c-.3.300-.8.900-.8 1.800 0 1.700 1.800 3.800 3.400 4.800 1.400.8 2.200.9 2.900.8.600-.1 1.300-.7 1.500-1.300l-1.800-1-.8.800c-.8-.3-2-1.200-2.600-2.400l.7-.8-.9-1.900z"/></svg></a>
   <dialog id="mn" aria-label="Cardápio"><div class="mh"><b>Cardápio</b><span><a href="${U(L.cardapio)}" target="_blank" rel="noopener">Abrir em nova aba</a><button type="button" id="mx">Fechar</button></span></div><iframe id="mf" title="Cardápio"></iframe></dialog>`;
 
-  const dlg=$('#mn');
+  const dlg=$('#mn'),h0=$('#h'),mb=$('.mb');
+  mb.onclick=()=>{const o=h0.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
+  document.querySelectorAll('nav a,nav .lk').forEach(x=>x.addEventListener('click',()=>h0.classList.remove('open')));
   document.querySelectorAll('[data-menu]').forEach(b=>b.onclick=()=>{$('#mf').src=menuUrl;dlg.showModal()});
   $('#mx').onclick=()=>dlg.close();
   dlg.onclick=e=>{if(e.target===dlg)dlg.close()};
