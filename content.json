@@ -1,6 +1,6 @@
 {
   "nome": "Cimá Carriço",
-  "slogan": "Restaurante & Tampas Bar",
+  "slogan": "Restaurante e Petiscaria",
   "titulo": "Um lugar para encontros que merecem boa mesa.",
   "intro": "Almoços, jantares e celebrações em Linhares. Reserve sua mesa ou combine seu evento direto pelo WhatsApp.",
   "fotoPrincipal": "",
@@ -9,30 +9,91 @@
   "fotoSobre": "",
   "destaquesTitulo": "Da cozinha",
   "destaques": [
-    {"prato": "Tábua de petiscos", "descricao": "Seleção da casa para dividir.", "preco": "R$ 78"},
-    {"prato": "Moqueca capixaba", "descricao": "Peixe do dia, pirão e arroz.", "preco": "R$ 138"},
-    {"prato": "Drinks da casa", "descricao": "Clássicos e autorais, do balcão à mesa.", "preco": "R$ 32"},
-    {"prato": "Pudim de leite", "descricao": "Calda de caramelo bem tostada.", "preco": "R$ 22"}
+    {
+      "prato": "Tábua de petiscos",
+      "descricao": "Seleção da casa para dividir.",
+      "preco": "R$ 78",
+      "foto": ""
+    },
+    {
+      "prato": "Moqueca capixaba",
+      "descricao": "Peixe do dia, pirão e arroz.",
+      "preco": "R$ 138",
+      "foto": ""
+    },
+    {
+      "prato": "Drinks da casa",
+      "descricao": "Clássicos e autorais, do balcão à mesa.",
+      "preco": "R$ 32",
+      "foto": ""
+    },
+    {
+      "prato": "Pudim de leite",
+      "descricao": "Calda de caramelo bem tostada.",
+      "preco": "R$ 22",
+      "foto": ""
+    }
   ],
-  "galeria": ["", "", "", "", ""],
+  "galeria": [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
   "reservaTitulo": "Reserve sua mesa",
   "reservaTexto": "Escolha o dia, o horário e a quantidade de pessoas. A mensagem segue pronta para o nosso WhatsApp.",
   "eventosTitulo": "Eventos e comemorações",
   "eventosTexto": "Aniversários, confraternizações e reuniões. Informe o tipo de evento e o número de convidados e enviamos as opções.",
-  "tiposEvento": ["Aniversário", "Confraternização de empresa", "Casamento ou noivado", "Formatura", "Outro"],
-  "atalhos": [
-    {"rotulo": "Receber o cardápio de eventos", "texto": "Olá! Gostaria de receber o cardápio para eventos do Cimá Carriço."},
-    {"rotulo": "Mesa para grupo grande", "texto": "Olá! Preciso de uma mesa para um grupo grande. Podem me ajudar?"},
-    {"rotulo": "Tirar uma dúvida", "texto": "Olá! Tenho uma dúvida sobre o restaurante."}
+  "tiposEvento": [
+    "Aniversário",
+    "Confraternização de empresa",
+    "Casamento ou noivado",
+    "Formatura",
+    "Outro"
   ],
-  "avaliacoes": {"cabecalho": "O que dizem no Google", "nota": "", "total": "", "itens": []},
+  "atalhos": [
+    {
+      "rotulo": "Receber o cardápio de eventos",
+      "texto": "Olá! Gostaria de receber o cardápio para eventos do Cimá Carriço."
+    },
+    {
+      "rotulo": "Mesa para grupo grande",
+      "texto": "Olá! Preciso de uma mesa para um grupo grande. Podem me ajudar?"
+    },
+    {
+      "rotulo": "Tirar uma dúvida",
+      "texto": "Olá! Tenho uma dúvida sobre o restaurante."
+    }
+  ],
+  "avaliacoes": {
+    "cabecalho": "O que dizem no Google",
+    "nota": "4.8",
+    "total": "319",
+    "itens": []
+  },
   "visiteTitulo": "Como chegar",
-  "mapaBusca": "Cimá Carriço Restaurante Linhares ES",
-  "endereco": "Linhares, Espírito Santo",
+  "mapaBusca": "Cimá Carriço Restaurante e Petiscaria Linhares ES",
+  "endereco": "R. dos Flamboyant, Jardim Laguna, Linhares - ES, 29904-320",
   "horarios": [
-    {"dias": "Terça a sexta", "d": "2-5", "abre": "11:00", "fecha": "23:00"},
-    {"dias": "Sábado", "d": "6", "abre": "11:00", "fecha": "23:00"},
-    {"dias": "Domingo", "d": "0", "abre": "11:00", "fecha": "17:00"}
+    {
+      "dias": "Terça a sexta",
+      "d": "2-5",
+      "abre": "11:00",
+      "fecha": "23:00"
+    },
+    {
+      "dias": "Sábado",
+      "d": "6",
+      "abre": "11:00",
+      "fecha": "23:00"
+    },
+    {
+      "dias": "Domingo",
+      "d": "0",
+      "abre": "11:00",
+      "fecha": "17:00"
+    }
   ],
   "links": {
     "cardapio": "https://drive.google.com/file/d/18yn9ScWvaD97JLL2tprKmtLldp8MJBP_/view?usp=drivesdk",
@@ -41,5 +102,7 @@
     "reservas": "https://wa.me/5527999271527",
     "whatsapp": "https://wa.me/5527996010561",
     "instagram": "https://www.instagram.com/cimacarrico.restaurante/"
-  }
+  },
+  "rodapeTexto": "Restaurante e petiscaria em Linhares, no Espírito Santo. Reservas, eventos e delivery pelos canais ao lado.",
+  "credito": ""
 }
