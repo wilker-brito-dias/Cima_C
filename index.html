@@ -29,26 +29,35 @@ h2{font-size:clamp(2rem,4.2vw,3.3rem);margin-bottom:24px}
 header{position:fixed;inset:0 0 auto;z-index:20;color:var(--cal);transition:background .3s}
 header.s,header.open{background:rgba(8,15,44,.95);backdrop-filter:blur(10px)}
 header .w{display:flex;align-items:center;justify-content:space-between;gap:20px;height:76px}
-header b{font:500 1.5rem var(--d)}
+header .lg{font:500 1.5rem var(--d);text-decoration:none}
 nav{display:flex;gap:28px;font-size:.95rem}
 nav a{text-decoration:none;font-weight:600}
 .hr{display:flex;align-items:center;gap:10px}
 .hr .btn{margin:0;min-height:42px}
 .mb{display:none;width:44px;height:44px;background:none;border:1.5px solid rgba(255,255,255,.4);border-radius:50%;color:#fff;cursor:pointer;place-items:center}
 .mb svg{width:22px;height:22px}
-.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center;min-height:100svh;padding-block:120px 80px}
 h1{font-size:clamp(2.6rem,5.6vw,5rem)}
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;color:#fff;overflow:hidden;background:radial-gradient(900px 600px at -8% 108%,rgba(46,88,214,.4),transparent 60%),linear-gradient(165deg,#0E1D4F,#060B1F)}
+.hv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hs{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,11,31,.86) 0%,rgba(6,11,31,.5) 55%,rgba(6,11,31,.16) 100%),linear-gradient(0deg,rgba(6,11,31,.92) 0%,rgba(6,11,31,0) 45%)}
+.hc{position:relative;width:100%;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-block:130px 72px}
+.hc h1{max-width:16ch}
+.snd{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(8,15,44,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font:600 .9rem 'Hanken Grotesk',sans-serif;cursor:pointer;flex:none}
+.snd svg{width:20px;height:20px}
+.rvw{display:grid;grid-template-columns:auto 1fr;gap:64px;align-items:center}
+.rot{display:grid}
+.rq{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .9s,visibility .9s;border-left:2px solid var(--au);padding-left:20px;margin:0}
+.rq.on{opacity:1;visibility:visible}
+.rq p{font-size:1.15rem;line-height:1.55;max-width:56ch}
+.rq footer{margin-top:10px;font-size:.88rem;opacity:.7}
+.dots{display:flex;margin-top:14px;padding-left:12px}
+.dots button{width:22px;height:22px;border:0;cursor:pointer;background:radial-gradient(circle,rgba(11,22,56,.25) 0 4px,transparent 4.5px)}
+.dots button[aria-current=true]{background:radial-gradient(circle,var(--ink) 0 4px,transparent 4.5px)}
 .hero p{max-width:46ch;margin:24px 0 32px;opacity:.88;font-size:1.1rem}
 .st{display:inline-flex;align-items:center;gap:10px;margin-top:20px;font-weight:600;font-size:.95rem}
 .st i{width:10px;height:10px;border-radius:50%;background:#3ddc84}.st.f i{background:var(--pim)}
-.ah{position:relative;width:100%;max-width:470px;justify-self:end}
-.arch{padding:10px;background:linear-gradient(150deg,#EBD093,#9C7A3A 45%,#1B3FA0);border-radius:999px 999px 0 0;animation:rise 1.3s cubic-bezier(.2,.7,.2,1) both}
-.bd{position:absolute;left:-26px;bottom:40px;display:grid;gap:2px;padding:14px 20px;border-radius:14px;background:rgba(255,255,255,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.28);text-decoration:none;color:#fff}
-.bd b{font:500 2rem/1 var(--d)}.bd span{color:var(--au);letter-spacing:2px}.bd small{opacity:.85;font-size:.8rem}
-@keyframes rise{from{clip-path:inset(100% 0 0)}}
 .im{position:relative;overflow:hidden;width:100%}
 .im>*{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.arch .im{aspect-ratio:3/4;border-radius:999px 999px 0 0}
 .about{display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:center}
 .about>.im{aspect-ratio:4/5}
 .about p{max-width:58ch;font-size:1.12rem}
@@ -101,9 +110,9 @@ dialog iframe{flex:1;border:0;width:100%}
 @media(max-width:1000px){.ftg{grid-template-columns:1fr 1fr}.dest{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){
  section{padding-block:68px}
- .hero,.about,.two,.map{grid-template-columns:1fr;gap:44px}
- .hero{min-height:0;padding-block:104px 56px}
- .ah{justify-self:center;max-width:420px}.bd{left:8px;bottom:28px}
+ .about,.two,.map,.rvw{grid-template-columns:1fr;gap:40px}
+ .hc{padding-block:110px 44px;flex-direction:column;align-items:flex-start}
+ .hs{background:linear-gradient(0deg,rgba(6,11,31,.94) 0%,rgba(6,11,31,.58) 55%,rgba(6,11,31,.36) 100%)}
  .mb{display:grid}
  nav{display:none;position:absolute;top:76px;left:0;right:0;flex-direction:column;gap:0;padding:6px 24px 18px;background:#080F2C}
  header.open nav{display:flex}
@@ -118,10 +127,10 @@ dialog iframe{flex:1;border:0;width:100%}
  .hero .btn,.chips .btn,.map .btn,.actions .btn{width:100%;margin-right:0}
  .dest{gap:16px}.cap h3{font-size:1.15rem}
  .cap p{font-size:.9rem}
- header b{font-size:1.25rem}
+ header .lg{font-size:1.25rem}
  .w{padding-inline:20px}
 }
-@media(prefers-reduced-motion:reduce){.arch{animation:none}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
