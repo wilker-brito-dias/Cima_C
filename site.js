@@ -28,7 +28,7 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   const op=c.horarios.find(h=>inD(h.d,wd)&&m>=tm(h.abre)&&m<tm(h.fecha));
   const st=op?`<span class="st"><i></i>Aberto agora, até ${hh(op.fecha)}</span>`:`<span class="st f"><i></i>Fechado agora</span>`;
   const A=rv&&(rv.nota||(rv.itens||[]).length)?rv:c.avaliacoes, it=(A.itens||[]).filter(x=>x.texto);
-  const vid=/^(media\/|https:\/\/)/.test(c.video||'');
+  const vid=/^(media\/|\/api\/media\/|https:\/\/)/.test(c.video||'');
   const q=encodeURIComponent(c.mapaBusca||c.endereco);
   const menuUrl=String(L.cardapio).replace(/\/view.*$/,'/preview');
   const wTxt=`Olá! Vim pelo site do ${c.nome} e gostaria de falar com vocês.`;
@@ -36,12 +36,12 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   <header id="h"><div class="w"><a class="lg" id="lg" href="#topo" aria-label="${E(c.nome)}, voltar ao topo">${E(c.nome)}</a>
     <nav><button class="lk" data-menu>Cardápio</button><a href="#reservas">Reservas</a><a href="#eventos">Eventos</a><a href="#avaliacoes">Avaliações</a><a href="#visite">Como chegar</a></nav>
     <div class="hr"><a class="btn" href="#reservas">Reservar</a><button class="mb" type="button" aria-label="Abrir menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button></div></div></header>
-  <div class="hero" id="topo">
-    ${vid?`<video id="hv" class="hv" muted loop playsinline autoplay preload="metadata" poster="${E(c.videoCapa)}" aria-hidden="true"><source src="${E(c.video)}" type="video/mp4"></video>`:''}
+  <div class="hero" id="topo"${!vid&&c.videoCapa?` style="background-image:url('${E(c.videoCapa)}');background-size:cover;background-position:center"`:''}>
+    ${vid?`<video id="hv" class="hv" src="${E(c.video)}" muted loop playsinline autoplay preload="auto" poster="${E(c.videoCapa)}" aria-hidden="true"></video>`:''}
     <div class="hs"></div>
     <div class="w hc"><div><h1>${E(c.titulo)}</h1><p>${E(c.intro)}</p>
       <a class="btn" href="#reservas">Reservar mesa</a><button class="btn o" data-menu>Ver cardápio</button><br>${st}</div>
-      ${vid?`<button class="snd" id="snd" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg><span>Ativar som</span></button>`:''}</div>
+      ${vid?`<div class="ctl"><button class="snd" id="pp" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Reproduzir vídeo</span></button><button class="snd" id="snd" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg><span>Ativar som</span></button></div>`:''}</div>
   </div>
   <section><div class="w about">${pic(c.fotoSobre,0,c.sobreTitulo)}<div><h2>${E(c.sobreTitulo)}</h2><p>${E(c.sobreTexto)}</p></div></div></section>
   <section style="padding-top:0"><div class="w"><h2>${E(c.destaquesTitulo)}</h2>
@@ -64,9 +64,9 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
     <div class="chips">${c.atalhos.map(a=>`<a class="btn o" href="${U(wa(G,a.texto))}" target="_blank" rel="noopener">${E(a.rotulo)}</a>`).join('')}</div>
   </div></section></div>
   <section id="avaliacoes"><div class="w"><h2>${E(A.cabecalho||'Avaliações')}</h2>
-    <div class="rvw"><div>${A.nota?`<p class="nota"><b>${E(A.nota)}</b><span aria-label="Nota ${E(A.nota)} de 5">${stars(A.nota)}</span>${A.total?`<br><small>${E(A.total)} avaliações no Google</small>`:''}</p>`:''}
-      <a class="btn k" href="${U(L.mapa)}" target="_blank" rel="noopener">${it.length?'Ver todas no Google':'Avaliar no Google'}</a></div>
-    <div>${it.length?`<div class="rot" id="rot">${it.map((x,i)=>`<blockquote class="rq${i?'':' on'}"><p>${E(x.texto)}</p><footer><span aria-label="${E(x.nota)} de 5">${stars(x.nota)}</span> ${E(x.autor)}${x.quando?`, ${E(x.quando)}`:''}</footer></blockquote>`).join('')}</div>${it.length>1?`<div class="dots">${it.map((_,i)=>`<button type="button" aria-label="Avaliação ${i+1}"${i?'':' aria-current="true"'}></button>`).join('')}</div>`:''}`:'<p>Já nos visitou? Conte como foi a sua experiência.</p>'}</div></div></div></section>
+    <div class="rvw${it.length?'':' n'}"><div>${A.nota?`<p class="nota"><b>${E(A.nota)}</b><span aria-label="Nota ${E(A.nota)} de 5">${stars(A.nota)}</span>${A.total?`<br><small>${E(A.total)} avaliações no Google</small>`:''}</p>`:''}
+      ${it.length?'':'<p style="margin-bottom:20px">Já nos visitou? Conte como foi a sua experiência.</p>'}<a class="btn k" href="${U(L.mapa)}" target="_blank" rel="noopener">${it.length?'Ver todas no Google':'Avaliar no Google'}</a></div>
+    <div>${it.length?`<div class="rot" id="rot">${it.map((x,i)=>`<blockquote class="rq${i?'':' on'}"><p>${E(x.texto)}</p><footer><span aria-label="${E(x.nota)} de 5">${stars(x.nota)}</span> ${E(x.autor)}${x.quando?`, ${E(x.quando)}`:''}</footer></blockquote>`).join('')}</div>${it.length>1?`<div class="dots">${it.map((_,i)=>`<button type="button" aria-label="Avaliação ${i+1}"${i?'':' aria-current="true"'}></button>`).join('')}</div>`:''}`:''}</div></div></div></section>
   <section id="visite" style="padding-top:0"><div class="w map">
     <div><h2>${E(c.visiteTitulo)}</h2><address>${E(c.endereco)}</address>${st}
       <dl>${c.horarios.map(h=>`<div><dt>${E(h.dias)}</dt><dd>${hh(h.abre)} às ${hh(h.fecha)}</dd></div>`).join('')}</dl>
@@ -96,11 +96,16 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   $('#rf').onsubmit=e=>{e.preventDefault();const f=fd(e.target);go(R,`Olá! Gostaria de reservar uma mesa no ${c.nome}.\n\nNome: ${f.nome}\nData: ${dt(f.data)}\nHorário: ${f.hora}\nPessoas: ${f.pessoas}${f.obs?`\nObservação: ${f.obs}`:''}`)};
   $('#ef').onsubmit=e=>{e.preventDefault();const f=fd(e.target);go(R,`Olá! Gostaria de um orçamento para um evento no ${c.nome}.\n\nNome: ${f.nome}\nTipo de evento: ${f.tipo}\nData prevista: ${dt(f.data)}\nConvidados: ${f.conv}${f.obs?`\nMensagem: ${f.obs}`:''}`)};
   document.querySelectorAll('#lg,[data-top]').forEach(a=>a.onclick=e=>{e.preventDefault();h0.classList.remove('open');scrollTo({top:0,behavior:'smooth'});history.replaceState(null,'',location.pathname+location.search)});
-  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches, v=$('#hv'), sn=$('#snd');
-  if(v){v.muted=true;
-    if(rm){v.removeAttribute('autoplay');v.pause();if(sn)sn.remove()}
-    else{v.play().catch(()=>{});new IntersectionObserver(([x])=>x.isIntersecting?v.play().catch(()=>{}):v.pause()).observe(v)}
-    if(sn)sn.onclick=()=>{v.muted=!v.muted;if(!v.muted)v.play().catch(()=>{});sn.setAttribute('aria-pressed',String(!v.muted));sn.querySelector('span').textContent=v.muted?'Ativar som':'Desativar som'}}
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches, v=$('#hv'), sn=$('#snd'), pp=$('#pp');
+  if(v){
+    v.muted=true;let off=false;
+    const play=()=>v.play().catch(()=>{}), sync=()=>pp.querySelector('span').textContent=v.paused?'Reproduzir vídeo':'Pausar vídeo';
+    v.addEventListener('play',sync);v.addEventListener('pause',sync);v.addEventListener('error',()=>document.querySelector('.ctl')?.remove());
+    {play();['pointerup','touchend','keydown'].forEach(ev=>addEventListener(ev,()=>{if(v.paused&&!off)play()},{once:true,passive:true}));
+      new IntersectionObserver(([x])=>{if(x.isIntersecting){if(!off)play()}else v.pause()}).observe(v)}
+    pp.onclick=()=>{if(v.paused){off=false;play()}else{off=true;v.pause()}};
+    sn.onclick=()=>{v.muted=!v.muted;if(!v.muted&&v.paused){off=false;play()}sn.setAttribute('aria-pressed',String(!v.muted));sn.querySelector('span').textContent=v.muted?'Ativar som':'Desativar som'};
+    sync()}
   const qs=[...document.querySelectorAll('.rq')],ds=[...document.querySelectorAll('.dots button')];
   if(qs.length>1){let i=0,t;const go=n=>{i=(n+qs.length)%qs.length;qs.forEach((e,k)=>e.classList.toggle('on',k===i));ds.forEach((d,k)=>d.setAttribute('aria-current',k===i))};
     const run=()=>{clearInterval(t);if(!rm)t=setInterval(()=>go(i+1),7000)};
