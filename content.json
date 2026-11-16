@@ -1,4 +1,11 @@
 {
+  "tema": {
+    "matiz": "354",
+    "intensidade": "46",
+    "fundo": "9",
+    "destaque": "40",
+    "brilho": "66"
+  },
   "nome": "Cimá Carriço",
   "slogan": "Restaurante e Petiscaria",
   "titulo": "Um lugar para encontros que merecem boa mesa.",
