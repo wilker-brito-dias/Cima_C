@@ -6,9 +6,11 @@ const J = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers: 
 const hash = (p, s) => scryptSync(p, s, 32).toString('hex');
 const same = (a, b) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 const VS = 3.5e6; // tamanho de cada pedaço de vídeo
+const gkey = async () => process.env.GOOGLE_API_KEY || (await store().get('gkey')) || '';
+const gerr = m => /not been used|disabled|not enabled/i.test(m) ? 'A Places API (New) não está ativada no projeto do Google Cloud.' : /billing/i.test(m) ? 'O faturamento não está ativado no Google Cloud.' : /api key not valid|invalid/i.test(m) ? 'A chave é inválida. Copie a chave inteira.' : /blocked|not authorized|permission/i.test(m) ? 'A chave está bloqueada. Nas restrições da chave, permita a "Places API (New)".' : m;
 async function reviews() {
-  const k = process.env.GOOGLE_API_KEY;
-  if (!k) return { d: null, err: 'A chave do Google (GOOGLE_API_KEY) ainda não foi cadastrada no Netlify.' };
+  const k = await gkey();
+  if (!k) return { d: null, err: 'Ainda não há chave do Google cadastrada.' };
   const old = await store().get('reviews', { type: 'json' });
   if (old && Date.now() - old.t < 864e5) return { d: old.d };
   try {
@@ -18,12 +20,12 @@ async function reviews() {
       const r = await fetch('https://places.googleapis.com/v1/places:searchText', { method: 'POST', headers: { 'content-type': 'application/json', 'X-Goog-Api-Key': k, 'X-Goog-FieldMask': 'places.id' }, body: JSON.stringify({ textQuery: ct?.mapaBusca || 'Cimá Carriço Restaurante e Petiscaria Linhares ES', languageCode: 'pt-BR' }) });
       const j = await r.json();
       id = j.places?.[0]?.id;
-      if (!id) return { d: old?.d || null, err: 'Google: ' + (j.error?.message || 'local não encontrado.') };
+      if (!id) return { d: old?.d || null, err: 'Google: ' + gerr(j.error?.message || 'local não encontrado.') };
       await store().set('placeid', id);
     }
     const r = await fetch(`https://places.googleapis.com/v1/places/${id}?languageCode=pt-BR`, { headers: { 'X-Goog-Api-Key': k, 'X-Goog-FieldMask': 'rating,userRatingCount,reviews' } });
     const g = await r.json();
-    if (!r.ok) return { d: old?.d || null, err: 'Google: ' + (g.error?.message || r.status) };
+    if (!r.ok) return { d: old?.d || null, err: 'Google: ' + gerr(g.error?.message || String(r.status)) };
     const d = { nota: g.rating, total: g.userRatingCount, itens: (g.reviews || []).map(x => ({ autor: x.authorAttributionDisplayName, nota: x.rating, texto: x.text?.text || '', quando: x.relativePublishTimeDescription })) };
     await store().setJSON('reviews', { t: Date.now(), d });
     return { d };
@@ -95,7 +97,15 @@ export default async req => {
   // ---- rotas protegidas ----
   if (!valid(c, (req.headers.get('authorization') || '').slice(7))) return J({ erro: 'Sessão expirada. Entre de novo.' }, 401);
   if (p === 'me') return J({ ok: 1 });
-  if (p === 'status') { const r = await reviews(); return J({ google: !!process.env.GOOGLE_API_KEY, itens: r.d?.itens?.length || 0, erro: r.err || '' }); }
+  if (p === 'status') { const k = await gkey(), r = await reviews(); return J({ google: !!k, chave: k ? '••••' + k.slice(-4) : '', itens: r.d?.itens?.length || 0, erro: r.err || '' }); }
+
+  if (p === 'gkey' && req.method === 'POST') {
+    const k = String((await req.json()).chave || '').trim();
+    if (k && !/^[A-Za-z0-9_-]{20,80}$/.test(k)) return J({ erro: 'Chave inválida. Copie a chave inteira do Google Cloud.' }, 400);
+    if (k) await store().set('gkey', k); else await store().delete('gkey');
+    await store().delete('reviews'); await store().delete('placeid');
+    return J({ ok: 1 });
+  }
 
   if (p === 'vupload' && req.method === 'POST') {
     const q = new URL(req.url).searchParams, id = q.get('id') || '', i = +q.get('i'), n = +q.get('n'), t = q.get('t');
