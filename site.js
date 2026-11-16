@@ -78,17 +78,24 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
     <div><h4>Contato</h4><p><a href="${U(L.reservas)}" target="_blank" rel="noopener">Reservas: ${fone(R)}</a></p><p><a href="${U(L.whatsapp)}" target="_blank" rel="noopener">WhatsApp: ${fone(G)}</a></p><p><a href="${U(L.instagram)}" target="_blank" rel="noopener">Instagram</a></p><p><a href="${U(L.delivery)}" target="_blank" rel="noopener">Delivery</a></p><p><button class="lk" data-menu>Ver cardápio</button></p></div>
   </div><div class="w fb2"><span>© ${now.getFullYear()} ${E(c.nome)}. Todos os direitos reservados.</span>${c.credito?`<span>${E(c.credito)}</span>`:''}</div></div>
   <a class="fab" aria-label="Falar pelo WhatsApp" href="${U(wa(G,wTxt))}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.200 14.800l-.3-.2-2.600.7.700-2.500-.2-.3A8 8 0 0 1 12 4z"/><path d="M8.500 7.500c-.3.300-.8.900-.8 1.800 0 1.700 1.800 3.800 3.400 4.800 1.400.8 2.200.9 2.900.8.600-.1 1.300-.7 1.500-1.300l-1.800-1-.8.800c-.8-.3-2-1.200-2.600-2.400l.7-.8-.9-1.900z"/></svg></a>
-  <dialog id="mn" aria-label="Cardápio"><div class="mh"><b>Cardápio</b><span><a href="${U(L.cardapio)}" target="_blank" rel="noopener">Abrir em nova aba</a><button type="button" id="mx">Fechar</button></span></div><iframe id="mf" title="Cardápio"></iframe></dialog>`;
+  <dialog id="mn" aria-label="Cardápio"><div class="mh"><b>Cardápio</b><span><a href="${U(L.cardapio)}" target="_blank" rel="noopener">Abrir PDF</a><button type="button" id="mx">Fechar</button></span></div><div class="mc" id="mc"></div></dialog>`;
 
   const dlg=$('#mn'),h0=$('#h'),mb=$('.mb');
   mb.onclick=()=>{const o=h0.classList.toggle('open');mb.setAttribute('aria-expanded',o)};
   document.querySelectorAll('nav a,nav .lk').forEach(x=>x.addEventListener('click',()=>h0.classList.remove('open')));
-  document.querySelectorAll('[data-menu]').forEach(b=>b.onclick=()=>{$('#mf').src=menuUrl;dlg.showModal()});
+  const pages=(c.cardapioPaginas||[]).filter(x=>/^(data:image\/|https:|\/api\/img\/|media\/)/.test(x)), mc=$('#mc'), embed=!/Android/i.test(navigator.userAgent);
+  const openMenu=()=>{mc.innerHTML=pages.length?`<div class="mp">${pages.map((x,i)=>`<img src="${E(x)}" alt="Cardápio, página ${i+1}">`).join('')}</div>`:embed?`<iframe title="Cardápio" src="${E(menuUrl)}"></iframe>`:`<div class="mz"><p>Toque abaixo para abrir o cardápio completo em PDF.</p><a class="btn k" href="${U(L.cardapio)}" target="_blank" rel="noopener">Abrir cardápio em PDF</a></div>`;dlg.showModal();dlg.setAttribute('tabindex','-1');dlg.focus()};
+  dlg.addEventListener('close',()=>{mc.innerHTML=''});
+  document.querySelectorAll('[data-menu]').forEach(b=>b.onclick=openMenu);
   $('#mx').onclick=()=>dlg.close();
   dlg.onclick=e=>{if(e.target===dlg)dlg.close()};
   document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{const i=b.parentNode.querySelector('input');i.value=Math.max(1,Math.min(60,+i.value+ +b.dataset.s))});
   const today=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
   document.querySelectorAll('input[type=date]').forEach(i=>i.min=today);
+  const plus=n=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4+n*864e5).toISOString().slice(0,10);
+  $('#rf [name=data]').value=plus(0);$('#rf [name=hora]').value='20:00';$('#ef [name=data]').value=plus(30);
+  const fab=$('.fab'),seen=new Set();
+  if(fab){const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?seen.add(e.target):seen.delete(e.target));fab.classList.toggle('hide',seen.size>0)});io.observe($('.two'));io.observe($('.hero'))}
   const go=(n,t)=>window.open(wa(n,t),'_blank','noopener');
   const fd=f=>Object.fromEntries(new FormData(f));
   const dt=x=>x.split('-').reverse().join('/');
