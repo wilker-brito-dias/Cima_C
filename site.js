@@ -6,10 +6,10 @@ const fone=n=>{n=String(n).replace(/^55/,'');return n.length>=10?`(${n.slice(0,2
 const hh=t=>String(t).replace(':00','h').replace(':','h');
 const $=s=>document.querySelector(s);
 const ART=[
-`<rect x='-60' y='-60' width='320' height='320' fill='#1B3FA0'/><rect x='28' y='48' width='144' height='104' rx='14' fill='#B07A45'/><circle cx='64' cy='86' r='11' fill='#5E6B2F'/><circle cx='90' cy='74' r='9' fill='#5E6B2F'/><path d='M112 68l32 9-8 30-34-6z' fill='#E8C65A'/><circle cx='68' cy='122' r='14' fill='#D93B25'/><path d='M104 120c10-9 28-9 38 2-10 11-28 11-38-2z' fill='#F4F5F2'/><circle cx='150' cy='132' r='8' fill='#5E6B2F'/>`,
-`<rect x='-60' y='-60' width='320' height='320' fill='#0B1638'/><circle cx='100' cy='100' r='76' fill='#F4F5F2'/><circle cx='100' cy='100' r='58' fill='#D9622B'/><ellipse cx='96' cy='100' rx='34' ry='15' fill='#F2D9B8' transform='rotate(-25 96 100)'/><circle cx='70' cy='128' r='7' fill='#5E6B2F'/><circle cx='128' cy='72' r='7' fill='#5E6B2F'/><circle cx='132' cy='126' r='6' fill='#E8C65A'/>`,
-`<rect x='-60' y='-60' width='320' height='320' fill='#D93B25'/><path d='M66 46h68l-8 74q-26 16-52 0z' fill='#F4F5F2' fill-opacity='.9'/><path d='M72 78h56l-4 42q-24 12-48 0z' fill='#E8C65A'/><rect x='96' y='122' width='8' height='38' fill='#F4F5F2'/><ellipse cx='100' cy='162' rx='28' ry='6' fill='#F4F5F2'/><circle cx='134' cy='48' r='15' fill='#5E9E3A'/><circle cx='134' cy='48' r='9' fill='#B6DB7A'/>`,
-`<rect x='-60' y='-60' width='320' height='320' fill='#D2AE6D'/><ellipse cx='100' cy='146' rx='68' ry='16' fill='#F4F5F2'/><path d='M58 140q-8-60 42-66 50 6 42 66z' fill='#C9792B'/><path d='M62 118q38 14 76 0 4 16 3 22-41 12-82 0 0-8 3-22z' fill='#8A4A12'/><ellipse cx='100' cy='76' rx='30' ry='7' fill='#8A4A12'/>`];
+`<rect x='-60' y='-60' width='320' height='320' class='b0'/><rect x='28' y='48' width='144' height='104' rx='14' fill='#B07A45'/><circle cx='64' cy='86' r='11' fill='#5E6B2F'/><circle cx='90' cy='74' r='9' fill='#5E6B2F'/><path d='M112 68l32 9-8 30-34-6z' fill='#E8C65A'/><circle cx='68' cy='122' r='14' fill='#D93B25'/><path d='M104 120c10-9 28-9 38 2-10 11-28 11-38-2z' fill='#F4F5F2'/><circle cx='150' cy='132' r='8' fill='#5E6B2F'/>`,
+`<rect x='-60' y='-60' width='320' height='320' class='b1'/><circle cx='100' cy='100' r='76' fill='#F4F5F2'/><circle cx='100' cy='100' r='58' fill='#D9622B'/><ellipse cx='96' cy='100' rx='34' ry='15' fill='#F2D9B8' transform='rotate(-25 96 100)'/><circle cx='70' cy='128' r='7' fill='#5E6B2F'/><circle cx='128' cy='72' r='7' fill='#5E6B2F'/><circle cx='132' cy='126' r='6' fill='#E8C65A'/>`,
+`<rect x='-60' y='-60' width='320' height='320' class='b2'/><path d='M66 46h68l-8 74q-26 16-52 0z' fill='#F4F5F2' fill-opacity='.9'/><path d='M72 78h56l-4 42q-24 12-48 0z' fill='#E8C65A'/><rect x='96' y='122' width='8' height='38' fill='#F4F5F2'/><ellipse cx='100' cy='162' rx='28' ry='6' fill='#F4F5F2'/><circle cx='134' cy='48' r='15' fill='#5E9E3A'/><circle cx='134' cy='48' r='9' fill='#B6DB7A'/>`,
+`<rect x='-60' y='-60' width='320' height='320' class='b3'/><ellipse cx='100' cy='146' rx='68' ry='16' fill='#F4F5F2'/><path d='M58 140q-8-60 42-66 50 6 42 66z' fill='#C9792B'/><path d='M62 118q38 14 76 0 4 16 3 22-41 12-82 0 0-8 3-22z' fill='#8A4A12'/><ellipse cx='100' cy='76' rx='30' ry='7' fill='#8A4A12'/>`];
 const art=i=>`<div class="im"><svg viewBox='0 -25 200 250' preserveAspectRatio='xMidYMid slice' role='img' aria-label='Ilustração'>${ART[i%4]}</svg></div>`;
 const pic=(s,i,a)=>s&&/^(data:image\/|https:|\/api\/img\/|media\/)/.test(s)?`<div class="im"><img src="${E(s)}" alt="${E(a)}" loading="lazy"></div>`:art(i);
 const stars=n=>{n=Math.max(0,Math.min(5,Math.round(+n||0)));return '★'.repeat(n)+'☆'.repeat(5-n)};
@@ -19,6 +19,7 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
 (async()=>{
   const [d,s,rv]=await Promise.all([get('content.json'),get('/api/content'),get('/api/reviews')]);
   const c=mg(d,s), L=c.links, R=num(L.reservas), G=num(L.whatsapp);
+  aplicarTema(c.tema);
   document.title=`${c.nome} - ${c.slogan}`;
   // aberto agora (horário de Brasília)
   const now=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Sao_Paulo'}));
@@ -37,16 +38,14 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
     <nav><button class="lk" data-menu>Cardápio</button><a href="#reservas">Reservas</a><a href="#eventos">Eventos</a><a href="#avaliacoes">Avaliações</a><a href="#visite">Como chegar</a></nav>
     <div class="hr"><a class="btn" href="#reservas">Reservar</a><button class="mb" type="button" aria-label="Abrir menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button></div></div></header>
   <div class="hero" id="topo"${!vid&&c.videoCapa?` style="background-image:url('${E(c.videoCapa)}');background-size:cover;background-position:center"`:''}>
-    ${vid?`<video id="hv" class="hv" src="${E(c.video)}" muted loop playsinline autoplay preload="auto" poster="${E(c.videoCapa)}" aria-hidden="true"></video>`:''}
-    <div class="hs"></div>
-    <div class="w hc"><div><h1>${E(c.titulo)}</h1><p>${E(c.intro)}</p>
+    ${vid?`<div class="vw"><video id="hv" class="hv" src="${E(c.video)}" loop playsinline preload="auto" poster="${E(c.videoCapa)}" aria-hidden="true"></video><div class="hs"></div></div>`:''}
+    <div class="w hc"><h1>${E(c.titulo)}</h1><p>${E(c.intro)}</p>
       <a class="btn" href="#reservas">Reservar mesa</a><button class="btn o" data-menu>Ver cardápio</button><br>${st}</div>
-      ${vid?`<div class="ctl"><button class="snd" id="pp" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span>Reproduzir vídeo</span></button><button class="snd" id="snd" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg><span>Ativar som</span></button></div>`:''}</div>
   </div>
   <section><div class="w about">${pic(c.fotoSobre,0,c.sobreTitulo)}<div><h2>${E(c.sobreTitulo)}</h2><p>${E(c.sobreTexto)}</p></div></div></section>
   <section style="padding-top:0"><div class="w"><h2>${E(c.destaquesTitulo)}</h2>
     <div class="dest">${c.destaques.map((p,i)=>`<div class="cap">${pic(p.foto,i,p.prato)}<h3>${E(p.prato)}</h3><p>${E(p.descricao)}</p><b>${E(p.preco)}</b></div>`).join('')}</div>
-    <div style="margin-top:36px"><button class="btn k" data-menu>Abrir cardápio completo</button><a class="btn o" style="color:var(--ink)" href="${U(L.delivery)}" target="_blank" rel="noopener">Pedir no delivery</a></div></div></section>
+    <div style="margin-top:36px"><button class="btn k" data-menu>Abrir cardápio completo</button><a class="btn o" style="color:hsl(var(--i))" href="${U(L.delivery)}" target="_blank" rel="noopener">Pedir no delivery</a></div></div></section>
   <section style="padding-top:0"><div class="w gal">${c.galeria.map((g,i)=>pic(g,i,'Foto do '+c.nome)).join('')}</div></section>
   <div class="dark"><section><div class="w">
     <div class="two"><div id="reservas"><h2>${E(c.reservaTitulo)}</h2><p>${E(c.reservaTexto)}</p>
@@ -70,7 +69,7 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   <section id="visite" style="padding-top:0"><div class="w map">
     <div><h2>${E(c.visiteTitulo)}</h2><address>${E(c.endereco)}</address>${st}
       <dl>${c.horarios.map(h=>`<div><dt>${E(h.dias)}</dt><dd>${hh(h.abre)} às ${hh(h.fecha)}</dd></div>`).join('')}</dl>
-      <div style="margin-top:28px"><a class="btn k" href="${U(L.mapa)}" target="_blank" rel="noopener">Abrir no Google Maps</a><a class="btn o" style="color:var(--ink)" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">Abrir no Waze</a></div></div>
+      <div style="margin-top:28px"><a class="btn k" href="${U(L.mapa)}" target="_blank" rel="noopener">Abrir no Google Maps</a><a class="btn o" style="color:hsl(var(--i))" href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">Abrir no Waze</a></div></div>
     <iframe title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${q}&output=embed"></iframe></div></section>
   <div class="dark ft"><div class="w ftg">
     <div><a class="fb" href="#topo" data-top>${E(c.nome)}</a><p>${E(c.rodapeTexto)}</p><a class="btn" href="#reservas">Reservar mesa</a></div>
@@ -96,16 +95,17 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   $('#rf').onsubmit=e=>{e.preventDefault();const f=fd(e.target);go(R,`Olá! Gostaria de reservar uma mesa no ${c.nome}.\n\nNome: ${f.nome}\nData: ${dt(f.data)}\nHorário: ${f.hora}\nPessoas: ${f.pessoas}${f.obs?`\nObservação: ${f.obs}`:''}`)};
   $('#ef').onsubmit=e=>{e.preventDefault();const f=fd(e.target);go(R,`Olá! Gostaria de um orçamento para um evento no ${c.nome}.\n\nNome: ${f.nome}\nTipo de evento: ${f.tipo}\nData prevista: ${dt(f.data)}\nConvidados: ${f.conv}${f.obs?`\nMensagem: ${f.obs}`:''}`)};
   document.querySelectorAll('#lg,[data-top]').forEach(a=>a.onclick=e=>{e.preventDefault();h0.classList.remove('open');scrollTo({top:0,behavior:'smooth'});history.replaceState(null,'',location.pathname+location.search)});
-  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches, v=$('#hv'), sn=$('#snd'), pp=$('#pp');
+  const rm=matchMedia('(prefers-reduced-motion: reduce)').matches, v=$('#hv');
   if(v){
-    v.muted=true;let off=false;
-    const play=()=>v.play().catch(()=>{}), sync=()=>pp.querySelector('span').textContent=v.paused?'Reproduzir vídeo':'Pausar vídeo';
-    v.addEventListener('play',sync);v.addEventListener('pause',sync);v.addEventListener('error',()=>document.querySelector('.ctl')?.remove());
-    {play();['pointerup','touchend','keydown'].forEach(ev=>addEventListener(ev,()=>{if(v.paused&&!off)play()},{once:true,passive:true}));
-      new IntersectionObserver(([x])=>{if(x.isIntersecting){if(!off)play()}else v.pause()}).observe(v)}
-    pp.onclick=()=>{if(v.paused){off=false;play()}else{off=true;v.pause()}};
-    sn.onclick=()=>{v.muted=!v.muted;if(!v.muted&&v.paused){off=false;play()}sn.setAttribute('aria-pressed',String(!v.muted));sn.querySelector('span').textContent=v.muted?'Ativar som':'Desativar som'};
-    sync()}
+    let on=true;
+    const mute=()=>{v.muted=true;v.play().catch(()=>{})};
+    const go=()=>{if(on&&!document.hidden)v.play().catch(mute)};
+    v.muted=false;go(); // tenta tocar com som; se o navegador bloquear, começa mudo e liga o som no primeiro toque ou clique
+    const unmute=()=>{v.muted=false;if(v.paused&&on)v.play().catch(mute)};
+    ['pointerup','touchend','keydown','click'].forEach(ev=>addEventListener(ev,unmute,{once:true,passive:true}));
+    new IntersectionObserver(([x])=>{on=x.isIntersecting;on?go():v.pause()}).observe(v);
+    document.addEventListener('visibilitychange',()=>document.hidden?v.pause():go());
+  }
   const qs=[...document.querySelectorAll('.rq')],ds=[...document.querySelectorAll('.dots button')];
   if(qs.length>1){let i=0,t;const go=n=>{i=(n+qs.length)%qs.length;qs.forEach((e,k)=>e.classList.toggle('on',k===i));ds.forEach((d,k)=>d.setAttribute('aria-current',k===i))};
     const run=()=>{clearInterval(t);if(!rm)t=setInterval(()=>go(i+1),7000)};
