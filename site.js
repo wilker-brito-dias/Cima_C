@@ -28,7 +28,7 @@ const get=u=>fetch(u).then(r=>r.ok?r.json():null).catch(()=>null);
   const inD=(x,w)=>{const[a,b=a]=String(x).split('-').map(Number);return a<=b?w>=a&&w<=b:w>=a||w<=b};
   const op=c.horarios.find(h=>inD(h.d,wd)&&m>=tm(h.abre)&&m<tm(h.fecha));
   const st=op?`<span class="st"><i></i>Aberto agora, até ${hh(op.fecha)}</span>`:`<span class="st f"><i></i>Fechado agora</span>`;
-  const A=rv&&(rv.nota||(rv.itens||[]).length)?rv:c.avaliacoes, it=(A.itens||[]).filter(x=>x.texto);
+  const A=rv&&(rv.nota||(rv.itens||[]).length)?{...c.avaliacoes,...rv,nota:rv.nota||c.avaliacoes.nota,total:rv.total||c.avaliacoes.total}:c.avaliacoes, it=(A.itens||[]).filter(x=>x.texto);
   const vid=/^(media\/|\/api\/media\/|https:\/\/)/.test(c.video||'');
   const q=encodeURIComponent(c.mapaBusca||c.endereco);
   const menuUrl=String(L.cardapio).replace(/\/view.*$/,'/preview');
