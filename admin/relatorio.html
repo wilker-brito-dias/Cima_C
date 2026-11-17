@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Relatório de visitas</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.5 system-ui,sans-serif;background:#F2F4F2;color:#0B1638;padding-bottom:48px}
+:focus-visible{outline:3px solid #D2AE6D;outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 24px;background:#0B1638;color:#fff}
+.top a,.top button{color:#fff}
+.top a{margin-right:16px}
+button,input{font:inherit}
+button{font-weight:700;padding:10px 18px;border:0;border-radius:999px;background:#D2AE6D;color:#0B1638;cursor:pointer}
+.w{max-width:960px;margin:24px auto;padding:0 20px;display:grid;gap:20px}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+input[type=month]{padding:10px;border:1px solid #b9c0d4;border-radius:8px;background:#fff}
+h1{font-size:1.6rem}h2{font-size:1.1rem;margin-bottom:10px}
+.sub{opacity:.75}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.k{background:#fff;border-radius:12px;padding:16px}
+.k b{display:block;font-size:2rem;line-height:1.1}.k span{display:block;font-weight:600}.k small{display:block;opacity:.7}
+.card{background:#fff;border-radius:12px;padding:18px}
+table{width:100%;border-collapse:collapse}td,th{padding:8px 4px;border-bottom:1px solid #e1e5ee;text-align:left}td:last-child,th:last-child{text-align:right}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+svg{width:100%;height:auto;display:block}
+textarea{width:100%;min-height:90px;padding:10px;border:1px solid #b9c0d4;border-radius:8px;font:inherit}
+.up{color:#17803d}.dn{color:#b3261e}
+.note{font-size:.88rem;opacity:.75}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+@media print{body{background:#fff}.noprint{display:none!important}.card,.k{border:1px solid #ddd}textarea{border:0;resize:none}}
+</style>
+</head>
+<body>
+<div class="top noprint"><b>Relatório de visitas</b><span><a href="/admin/">Voltar ao painel</a><button type="button" id="pr">Imprimir ou salvar em PDF</button></span></div>
+<main class="w" id="r"><p>Carregando...</p></main>
+<script src="/admin/relatorio.js" defer></script>
+</body>
+</html>
