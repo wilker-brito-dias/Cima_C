@@ -35,11 +35,13 @@ function login(msg=''){
 const draw=()=>{A.innerHTML=`<header><b>Painel · ${E(C.nome)}</b><span><a href="/" target="_blank">Ver o site</a><button class="g" id="out">Sair</button></span></header>
 <div class="cols"><form id="ed">${Object.keys(C).map(k=>ed(C[k],k,k)).join('')}</form>
 <div class="side"><form id="rb"><h2>Avaliações do Google</h2><p class="hint" id="gs">Verificando...</p>
-<label>Chave de API do Google<input name="chave" type="password" autocomplete="off" placeholder="Cole aqui a chave (começa com AIza)"></label>
-<button type="button" data-gk="1">Salvar chave e buscar avaliações</button>
+<p class="hint"><b>Grátis, sem cartão:</b> crie uma conta no <a href="https://serpapi.com/users/sign_up?plan=free" target="_blank" rel="noopener">SerpApi</a>, copie a "Your Private API Key" do painel deles e cole abaixo.</p>
+<label>Chave do SerpApi<input name="serp" type="password" autocomplete="off" placeholder="Cole aqui a chave"></label>
+<button type="button" data-sk="1">Salvar chave e buscar avaliações</button>
+<details><summary>API oficial do Google (exige cartão de crédito)</summary><label>Chave de API do Google<input name="chave" type="password" autocomplete="off" placeholder="Começa com AIza"></label><button type="button" data-gk="1">Salvar chave do Google</button></details>
 <details><summary>Adicionar avaliações manualmente (opcional)</summary><p class="hint">Uma por linha: Nome | nota | texto</p><textarea name="t" rows="4" placeholder="Maria Souza | 5 | Atendimento excelente."></textarea><button>Adicionar avaliações</button></details></form><form id="ac"><h2>Usuário e senha</h2><label>Novo usuário (opcional)<input name="usuario" autocomplete="username"></label><label>Nova senha (mínimo 8 caracteres)<input name="novaSenha" type="password" autocomplete="new-password"></label><label>Senha atual<input name="senhaAtual" type="password" autocomplete="current-password" required></label><button>Salvar acesso</button></form></div></div>
 <div class="bar"><button id="pub">Publicar alterações</button></div>`;gs();pv()};
-const gs=()=>api('status').then(s=>{const g=document.getElementById('gs');if(g)g.textContent=s.google?(s.erro?`Chave cadastrada (${s.chave}), mas: ${s.erro}`:`Conectado ao Google (${s.chave}): ${s.itens} avaliações aparecendo no site automaticamente, atualizadas 1 vez por dia.`):'Nenhuma chave cadastrada ainda. Cole a chave abaixo para as avaliações aparecerem sozinhas.'}).catch(()=>{});
+const gs=()=>api('status').then(s=>{const g=document.getElementById('gs');if(!g)return;g.textContent=(s.google||s.serp)?(s.erro?`Chave cadastrada, mas: ${s.erro}`:`Conectado (${s.fonte}): ${s.itens} avaliações aparecendo no site automaticamente.`):'Nenhuma chave cadastrada ainda. Use a opção grátis abaixo.'}).catch(()=>{});
 const redraw=()=>{const y=scrollY;draw();scrollTo(0,y)};
 async function panel(){
   try{await api('me');{const d=await fetch('/content.json').then(r=>r.json()),s=await api('content');C=mg(d,s)}draw()}catch(e){login()}
@@ -63,7 +65,7 @@ A.onchange=async e=>{
   }catch(x){toast(x.message)}};
 A.onclick=async e=>{
   const d=e.target.dataset;
-  if(d.gk){const i=document.querySelector('#rb [name=chave]');try{await api('gkey','POST',{chave:i.value});i.value='';toast('Chave salva. Buscando avaliações...');document.getElementById('gs').textContent='Buscando...';gs()}catch(x){toast(x.message)}}
+  if(d.gk||d.sk){const i=document.querySelector('#rb [name='+(d.sk?'serp':'chave')+']');try{await api(d.sk?'skey':'gkey','POST',{chave:i.value});i.value='';toast('Chave salva. Buscando avaliações...');document.getElementById('gs').textContent='Buscando...';gs()}catch(x){toast(x.message)}}
   if(d.pre){const [m,i,f,de,b]=d.pre.split(',');C.tema={matiz:m,intensidade:i,fundo:f,destaque:de,brilho:b};redraw()}
   if(d.clr){const a=d.clr.split('.'),l=a.pop();parent(a)[l]='';redraw()}
   if(d.add){const a=parent(d.add.split('.'));a.push(a.length?blank(a[0]):/itens$/.test(d.add)?{autor:'',nota:'5',texto:'',quando:''}:'');redraw()}
