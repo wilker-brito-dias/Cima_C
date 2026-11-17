@@ -7,12 +7,13 @@ const hash = (p, s) => scryptSync(p, s, 32).toString('hex');
 const same = (a, b) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 const VS = 3.5e6; // tamanho de cada pedaço de vídeo
 const gkey = async () => process.env.GOOGLE_API_KEY || (await store().get('gkey')) || '';
+const skey = async () => process.env.SERPAPI_KEY || (await store().get('skey')) || '';
 const gerr = m => /not been used|disabled|not enabled/i.test(m) ? 'A Places API (New) não está ativada no projeto do Google Cloud.' : /billing/i.test(m) ? 'O faturamento não está ativado no Google Cloud.' : /api key not valid|invalid/i.test(m) ? 'A chave é inválida. Copie a chave inteira.' : /blocked|not authorized|permission/i.test(m) ? 'A chave está bloqueada. Nas restrições da chave, permita a "Places API (New)".' : m;
-async function reviews() {
-  const k = await gkey();
-  if (!k) return { d: null, err: 'Ainda não há chave do Google cadastrada.' };
-  const old = await store().get('reviews', { type: 'json' });
-  if (old && Date.now() - old.t < 864e5) return { d: old.d };
+const serr = m => /invalid api key/i.test(m) ? 'A chave é inválida. Copie a chave inteira do painel do SerpApi.' : /run out|limit|exceed/i.test(m) ? 'O limite gratuito do mês acabou. As avaliações voltam no próximo mês.' : String(m);
+const txt = x => { const s = x.extracted_snippet?.original || x.snippet || ''; const p = s.split(/\(Original\)/i); return (p.length > 1 ? p.pop() : s).replace(/^\s*\(Translated by Google\)\s*/i, '').trim(); };
+
+// Opção oficial do Google (exige conta de cobrança no Google Cloud)
+async function viaGoogle(k) {
   try {
     let id = process.env.GOOGLE_PLACE_ID || await store().get('placeid');
     if (!id) {
@@ -20,17 +21,52 @@ async function reviews() {
       const r = await fetch('https://places.googleapis.com/v1/places:searchText', { method: 'POST', headers: { 'content-type': 'application/json', 'X-Goog-Api-Key': k, 'X-Goog-FieldMask': 'places.id' }, body: JSON.stringify({ textQuery: ct?.mapaBusca || 'Cimá Carriço Restaurante e Petiscaria Linhares ES', languageCode: 'pt-BR' }) });
       const j = await r.json();
       id = j.places?.[0]?.id;
-      if (!id) return { d: old?.d || null, err: 'Google: ' + gerr(j.error?.message || 'local não encontrado.') };
+      if (!id) return { err: 'Google: ' + gerr(j.error?.message || 'local não encontrado.') };
       await store().set('placeid', id);
     }
     const r = await fetch(`https://places.googleapis.com/v1/places/${id}?languageCode=pt-BR`, { headers: { 'X-Goog-Api-Key': k, 'X-Goog-FieldMask': 'rating,userRatingCount,reviews' } });
     const g = await r.json();
-    if (!r.ok) return { d: old?.d || null, err: 'Google: ' + gerr(g.error?.message || String(r.status)) };
-    const d = { nota: g.rating, total: g.userRatingCount, itens: (g.reviews || []).map(x => ({ autor: x.authorAttributionDisplayName, nota: x.rating, texto: x.text?.text || '', quando: x.relativePublishTimeDescription })) };
-    await store().setJSON('reviews', { t: Date.now(), d });
-    return { d };
-  } catch { return { d: old?.d || null, err: 'Falha ao consultar o Google.' }; }
+    if (!r.ok) return { err: 'Google: ' + gerr(g.error?.message || String(r.status)) };
+    return { d: { nota: g.rating, total: g.userRatingCount, itens: (g.reviews || []).map(x => ({ autor: x.authorAttributionDisplayName, nota: x.rating, texto: x.text?.text || '', quando: x.relativePublishTimeDescription })) } };
+  } catch { return { err: 'Falha ao consultar o Google.' }; }
 }
+
+// Opção grátis, sem cartão: SerpApi (serviço de terceiros que lê o Google Maps)
+async function viaSerp(k) {
+  try {
+    let id = await store().get('dataid');
+    if (!id) {
+      const ct = await store().get('content', { type: 'json' });
+      const q = encodeURIComponent(ct?.mapaBusca || 'Cimá Carriço Restaurante e Petiscaria Linhares ES');
+      const r = await fetch(`https://serpapi.com/search.json?engine=google_maps&type=search&q=${q}&hl=pt&api_key=${encodeURIComponent(k)}`);
+      const j = await r.json();
+      if (!r.ok || j.error) return { err: 'SerpApi: ' + serr(j.error || r.status) };
+      id = j.place_results?.data_id || j.local_results?.[0]?.data_id;
+      if (!id) return { err: 'SerpApi: não encontrei o restaurante no Google Maps. Confira o campo "Busca do mapa" no painel.' };
+      await store().set('dataid', id);
+    }
+    const r = await fetch(`https://serpapi.com/search.json?engine=google_maps_reviews&data_id=${encodeURIComponent(id)}&hl=pt&api_key=${encodeURIComponent(k)}`);
+    const j = await r.json();
+    if (!r.ok || j.error) return { err: 'SerpApi: ' + serr(j.error || r.status) };
+    const pi = j.place_info || {};
+    return { d: { nota: pi.rating ?? '', total: pi.reviews ?? '', itens: (j.reviews || []).map(x => ({ autor: x.user?.name || '', nota: x.rating, texto: txt(x), quando: x.date || '' })) } };
+  } catch { return { err: 'Falha ao consultar o SerpApi.' }; }
+}
+
+async function reviews() {
+  const old = await store().get('reviews', { type: 'json' });
+  if (old && Date.now() - old.t < (old.s ? 2592e5 : 864e5)) return { d: old.d }; // SerpApi: renova a cada 3 dias; Google: a cada 1 dia
+  const [gk, sk] = [await gkey(), await skey()];
+  if (!gk && !sk) return { d: null, err: 'Ainda não há chave cadastrada.' };
+  const bad = await store().get('rverr', { type: 'json' });
+  if (bad && Date.now() - bad.t < 18e5) return { d: old?.d || null, err: bad.m };
+  let r = gk ? await viaGoogle(gk) : { err: '' }, serp = false;
+  if (!r.d && sk) { r = await viaSerp(sk); serp = true; }
+  if (r.d) { await store().setJSON('reviews', { t: Date.now(), s: serp, d: r.d }); await store().delete('rverr'); return { d: r.d }; }
+  await store().setJSON('rverr', { t: Date.now(), m: r.err });
+  return { d: old?.d || null, err: r.err };
+}
+const reset = async () => { for (const k of ['reviews', 'placeid', 'dataid', 'rverr']) await store().delete(k); };
 const TYPES = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
 
 // Primeiro acesso: usuário "admin" e senha "cima1234" (ou ADMIN_USER / ADMIN_PASS no Netlify). Troque no painel.
@@ -97,13 +133,13 @@ export default async req => {
   // ---- rotas protegidas ----
   if (!valid(c, (req.headers.get('authorization') || '').slice(7))) return J({ erro: 'Sessão expirada. Entre de novo.' }, 401);
   if (p === 'me') return J({ ok: 1 });
-  if (p === 'status') { const k = await gkey(), r = await reviews(); return J({ google: !!k, chave: k ? '••••' + k.slice(-4) : '', itens: r.d?.itens?.length || 0, erro: r.err || '' }); }
+  if (p === 'status') { const [g, s] = [await gkey(), await skey()], r = await reviews(), o = await store().get('reviews', { type: 'json' }); return J({ google: !!g, serp: !!s, fonte: o?.s ? 'SerpApi' : 'Google', itens: r.d?.itens?.length || 0, erro: r.err || '' }); }
 
-  if (p === 'gkey' && req.method === 'POST') {
-    const k = String((await req.json()).chave || '').trim();
-    if (k && !/^[A-Za-z0-9_-]{20,80}$/.test(k)) return J({ erro: 'Chave inválida. Copie a chave inteira do Google Cloud.' }, 400);
-    if (k) await store().set('gkey', k); else await store().delete('gkey');
-    await store().delete('reviews'); await store().delete('placeid');
+  if ((p === 'gkey' || p === 'skey') && req.method === 'POST') {
+    const k = String((await req.json()).chave || '').trim(), n = p;
+    if (k && !/^[A-Za-z0-9_-]{20,100}$/.test(k)) return J({ erro: 'Chave inválida. Copie a chave inteira, sem espaços.' }, 400);
+    if (k) await store().set(n, k); else await store().delete(n);
+    await reset();
     return J({ ok: 1 });
   }
 
