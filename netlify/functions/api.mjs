@@ -5,6 +5,17 @@ const store = () => getStore('cima');
 const J = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 const hash = (p, s) => scryptSync(p, s, 32).toString('hex');
 const same = (a, b) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
+const BOT = /bot|crawl|spider|slurp|headless|lighthouse|pingdom|monitor|preview|facebookexternalhit|whatsapp|python|curl|wget/i;
+const EV = ['v', 'reservar', 'reserva', 'evento', 'wa', 'cardapio', 'delivery', 'mapa', 'insta'];
+const brDay = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+const srcName = (r, u) => {
+  const x = String(u || r || '').toLowerCase();
+  if (!x) return 'Direto';
+  if (/insta/.test(x)) return 'Instagram'; if (/google/.test(x)) return 'Google'; if (/facebook|fb\.|meta/.test(x)) return 'Facebook';
+  if (/whatsapp|wa\.me/.test(x)) return 'WhatsApp'; if (/^t\.co|twitter|^x\.com/.test(x)) return 'X (Twitter)'; if (/tiktok/.test(x)) return 'TikTok';
+  if (/youtube|youtu\.be/.test(x)) return 'YouTube'; if (/bing|duckduckgo|yahoo/.test(x)) return 'Outros buscadores';
+  return u ? 'Campanha: ' + String(u).slice(0, 30) : 'Outros sites';
+};
 const VS = 3.5e6; // tamanho de cada pedaço de vídeo
 const gkey = async () => process.env.GOOGLE_API_KEY || (await store().get('gkey')) || '';
 const skey = async () => process.env.SERPAPI_KEY || (await store().get('skey')) || '';
@@ -89,10 +100,31 @@ const valid = (c, t = '') => {
   return JSON.parse(Buffer.from(b, 'base64url')).e > Date.now();
 };
 
-export default async req => {
+export default async (req, context) => {
   const p = new URL(req.url).pathname.replace('/api/', '');
 
   // ---- rotas públicas ----
+  // Contador de visitas: sem cookies e sem dados pessoais. O visitante vira um código que muda todo dia e não pode ser revertido.
+  if (req.method === 'POST' && p === 'e') {
+    try {
+      const ua = req.headers.get('user-agent') || '', sfs = req.headers.get('sec-fetch-site');
+      if (!ua || BOT.test(ua) || (sfs && sfs !== 'same-origin')) return new Response(null, { status: 204 });
+      const b = JSON.parse((await req.text()).slice(0, 500));
+      if (!EV.includes(b.e)) return new Response(null, { status: 204 });
+      const day = brDay(), key = 'stats/' + day;
+      let sk = await store().get('statkey'); if (!sk) { sk = randomBytes(16).toString('hex'); await store().set('statkey', sk); }
+      const ip = context?.ip || (req.headers.get('x-nf-client-connection-ip') || req.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+      const code = createHmac('sha256', sk + day).update(ip + '|' + ua).digest('hex').slice(0, 12);
+      const s = (await store().get(key, { type: 'json' })) || { v: 0, u: 0, e: {}, src: {}, dev: { m: 0, d: 0 }, h: [] };
+      if (b.e === 'v') {
+        s.v++; const so = srcName(String(b.r || ''), String(b.u || '')); s.src[so] = (s.src[so] || 0) + 1;
+        if (/Mobi|Android|iPhone/i.test(ua)) s.dev.m++; else s.dev.d++;
+        if (!s.h.includes(code)) { s.u++; if (s.h.length < 20000) s.h.push(code); }
+      } else s.e[b.e] = (s.e[b.e] || 0) + 1;
+      await store().setJSON(key, s);
+    } catch {}
+    return new Response(null, { status: 204 });
+  }
   if (req.method === 'GET' && p === 'content') return J(await store().get('content', { type: 'json' }));
 
   if (req.method === 'GET' && p === 'reviews') return J((await reviews()).d);
@@ -133,6 +165,13 @@ export default async req => {
   // ---- rotas protegidas ----
   if (!valid(c, (req.headers.get('authorization') || '').slice(7))) return J({ erro: 'Sessão expirada. Entre de novo.' }, 401);
   if (p === 'me') return J({ ok: 1 });
+  if (p === 'stats' && req.method === 'GET') {
+    const q = new URL(req.url).searchParams.get('mes') || '', mes = /^\d{4}-\d{2}$/.test(q) ? q : brDay().slice(0, 7);
+    const { blobs } = await store().list({ prefix: 'stats/' + mes }), dias = [];
+    for (const b of blobs) { const s = await store().get(b.key, { type: 'json' }); if (s) { const { h, ...r } = s; dias.push({ d: b.key.slice(6), ...r }); } }
+    dias.sort((x, y) => x.d.localeCompare(y.d));
+    return J({ mes, dias });
+  }
   if (p === 'status') { const [g, s] = [await gkey(), await skey()], r = await reviews(), o = await store().get('reviews', { type: 'json' }); return J({ google: !!g, serp: !!s, fonte: o?.s ? 'SerpApi' : 'Google', itens: r.d?.itens?.length || 0, erro: r.err || '' }); }
 
   if ((p === 'gkey' || p === 'skey') && req.method === 'POST') {
