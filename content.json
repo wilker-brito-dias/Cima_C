@@ -7,6 +7,7 @@
     "brilho": "66"
   },
   "nome": "Cimá Carriço",
+  "fotoLogo": "",
   "slogan": "Restaurante e Petiscaria",
   "titulo": "Um lugar para encontros que merecem boa mesa.",
   "intro": "Almoços, jantares e celebrações em Linhares. Reserve sua mesa ou combine seu evento direto pelo WhatsApp.",
@@ -113,5 +114,9 @@
     "instagram": "https://www.instagram.com/cimacarrico.restaurante/"
   },
   "rodapeTexto": "Restaurante e petiscaria em Linhares, no Espírito Santo. Reservas, eventos e delivery pelos canais ao lado.",
-  "credito": ""
+  "credito": "",
+  "siteUrl": "",
+  "seoTitulo": "",
+  "seoDescricao": "",
+  "fotoCompartilhar": ""
 }
