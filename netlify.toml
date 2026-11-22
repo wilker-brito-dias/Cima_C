@@ -2,6 +2,39 @@
   publish = "."
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# A página inicial, o robots.txt e o sitemap.xml são montados no servidor com o conteúdo atual do painel.
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/page"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/.netlify/functions/page/favicon"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/apple-touch-icon.png"
+  to = "/.netlify/functions/page/apple-touch-icon"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/apple-touch-icon-precomposed.png"
+  to = "/.netlify/functions/page/apple-touch-icon"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/robots.txt"
+  to = "/.netlify/functions/page/robots"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/page/sitemap"
+  status = 200
+  force = true
 
 [[headers]]
   for = "/*"
@@ -23,3 +56,8 @@
   for = "/media/*"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"
